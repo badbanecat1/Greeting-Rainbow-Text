@@ -1,61 +1,50 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
+@import 'https://fonts.googleapis.com/css?family=Permanent+Marker';
 
-* {
-    box-sizing: border-box;
-}
+$r : 50px;  // glow radius
+$o : 25px;  // glow offset
+$d : 2s;    // duration
+$chars : 7; // # of letters
+$bg : #111; // background color
+
+$c : cyan yellow tomato;
 
 body {
-    margin: 0;
-    min-height: 100vh;
-    background: #000;
-    display: grid;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Roboto', sans-serif;
+	font: 15vw/1 Permanent Marker;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	text-align: center;
+	background: $bg;
+	color: snow;
 }
 
-.neon_text {
-    color: #fff;
-    font-size: 16vw;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    display: inline-block;
-    position: relative;
-    background: #000;
-    filter: brightness(250%);
+span {
+	animation: glow $d ease-in-out both infinite;	
+
+	@for $i from 1 through $chars {
+		&:nth-child(#{$i}) {
+			animation-delay: $i/$chars * -$d;
+		}
+	}
 }
 
-.neon_text::before {
-    content: attr(data-text);
-    position: absolute;
-    left: 0;
-    right: 0;
-    mix-blend-mode: difference;
-    filter: blur(5px);
+@mixin glow($c1, $c2, $c3) {
+	text-shadow:
+		0 0 $r/6 snow,
+		0 (-$o) $r $c3,
+		(-$o) $o $r $c2,
+		$o $o $r $c3;
 }
 
-.neon_text::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-image: linear-gradient(90deg, #00ffd0, #d2bbff, #ffd100, #00ffd0);
-    mix-blend-mode: multiply;
-    animation-name: move;
-    animation-duration: 2s;
-    animation-timing-function: linear;
-    animation-fill-mode: both;
-    animation-iteration-count: infinite;
-}
-
-@keyframes move {
-    0% {
-        background-position-x: 0px;
-    }
-
-    100% {
-        background-position-x: 1000px;
-    }
+@keyframes glow {
+	0%, 100% {
+		@include glow(nth($c, 1), nth($c, 2), nth($c, 3));	
+	}
+	33% {
+		@include glow(nth($c, 2), nth($c, 3), nth($c, 1));
+	}
+	66% {
+		@include glow(nth($c, 3), nth($c, 1), nth($c, 2));
+	}
 }
